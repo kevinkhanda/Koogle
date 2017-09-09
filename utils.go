@@ -2,7 +2,28 @@ package main
 
 import "sort"
 
-func sortMapByValue(wordFrequencies map[int]int) PostingsList {
+func createStemPairsList(stemmingMap map[string]map[string]int) map[string]StemPairList {
+	result := make(map[string]StemPairList)
+	for k, wordPositions := range stemmingMap {
+		stemList := make(StemPairList, len(wordPositions))
+		i := 0
+		for key, value := range wordPositions {
+			stemList[i] = StemPair{key, value}
+			i++
+		}
+		result[k] = stemList
+	}
+	return result
+}
+
+type StemPair struct {
+	Key string
+	Value int
+}
+
+type StemPairList []StemPair
+
+func sortPostingsByTermFreauency(wordFrequencies map[int]int) PostingsList {
 	pl := make(PostingsList, len(wordFrequencies))
 	i := 0
 	for k, v := range wordFrequencies {

@@ -5,5 +5,7 @@ import (
 )
 
 func main() {
+
 	createInvertedIndex(filepath.Abs("../resources"))
+
 }
