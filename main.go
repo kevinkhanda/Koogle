@@ -1,6 +1,8 @@
 package main
 
-import "path/filepath"
+import (
+	"path/filepath"
+)
 
 func main() {
 	createInvertedIndex(filepath.Abs("../resources"))
