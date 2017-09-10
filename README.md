@@ -73,9 +73,17 @@ git clone https://github.com/KKhanda/Koogle.git ~/go/src/github.com/kevinkhanda/
 Application is now presented only as a CLI (will be extended later).
 It is OK to see a lot of error outputs. This means that some strings 
 were not matched by regular expressions.
+
+#### Running application with building
 ```
 cd ~/go/src/github.com/kevinkhanda/koogle/main/
 go build
+./main
+```
+
+#### Running the application without build (build file is already included)
+```
+cd ~/go/src/github.com/kevinkhanda/koogle/main/
 ./main
 ```
 
@@ -83,3 +91,12 @@ go build
 You will asked by a command prompt to type a query. So, this is what
 you should do. You can type any kind of query (number of words is not
 limited), however, in some cases you won't receive a result.
+
+Here are the examples of queries:
+
+![Alt text](screenshots/koogle_launch.png?raw=true "Koogle greetings!")
+![Alt text](screenshots/koogle_prompt.png?raw=true "Koogle prompt")
+![Alt text](screenshots/koogle_single_result.png?raw=true "Simple query")
+![Alt text](screenshots/koogle_several_results.png?raw=true "Several results")
+![Alt text](screenshots/not_found_koogle.png?raw=true "Error example")
+![Alt text](screenshots/Very_complex_query.png?raw=true "Complex query")
