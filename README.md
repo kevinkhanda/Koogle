@@ -87,7 +87,7 @@ cd ~/go/src/github.com/kevinkhanda/koogle/main/
 ./main
 ```
 
-##How to use the application 
+## How to use the application 
 You will asked by a command prompt to type a query. So, this is what
 you should do. You can type any kind of query (number of words is not
 limited), however, in some cases you won't receive a result.
