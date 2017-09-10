@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"os"
 	"io/ioutil"
-	//"github.com/caneroj1/stemmer"
 	"strings"
 	"text/scanner"
 	"strconv"
-	//"time"
 	"regexp"
 	"bytes"
 	"github.com/caneroj1/stemmer"
@@ -17,17 +15,12 @@ import (
 
 var IsValidString = regexp.MustCompile("[a-z]+$|[0-9]+$").MatchString
 
+var documentsIndexes = make(map[int]string)
 var stemmingMap = make(map[string]map[string]int) // Map of type "STEM" -> {"term1" -> Position in Indexes file}
-var indexesMap = make(map[string]map[int]int)     // Map of type "term" -> map{docId -> termFrequency}
-var sortedIndexesMap = make(map[string]PostingsList) // Map of type "term" -> []{Posting1 (docId, termFrequency)}
+var indexesMap = make(map[string]map[int]int)     // Map of type "term" -> map{Key -> Value}
+var sortedIndexesMap = make(map[string]PostingsList) // Map of type "term" -> []{Posting1 (Key, Value)}
 
 var scan scanner.Scanner
-
-func checkError(err error)  {
-	if err != nil {
-		panic(err)
-	}
-}
 
 func createInvertedIndex(packageToScan string, err error) {
 	checkError(err)
@@ -39,14 +32,11 @@ func createInvertedIndex(packageToScan string, err error) {
 		tokenizeDocuments(analyzedDocuments)
 	}
 	for key, value := range indexesMap {
-		sortedIndexesMap[key] = sortPostingsByTermFreauency(value) // Sort indexes by their term frequencies
+		sortedIndexesMap[key] = sortPostingsByTermFrequency(value) // Sort indexes by their term frequencies
 	}
-	//for key, value := range sortedIndexesMap {
-	//	fmt.Printf("Key = %s; Value = ", key)
-	//	fmt.Println(value)
-	//}
 	createInvertedIndexFile()
 	createStemFile()
+	createDocumentsIndexFile()
 }
 
 func analyzeDocuments(packageName string, file os.FileInfo) map[int]string {
@@ -63,6 +53,7 @@ func analyzeDocuments(packageName string, file os.FileInfo) map[int]string {
 			docId, err := strconv.ParseInt(re.FindString(title), 10, 64)
 			checkError(err)
 			result[int(docId)] = content
+			documentsIndexes[int(docId)] = content
 		}
 	}
 	return result
@@ -75,7 +66,7 @@ func tokenizeDocuments(analyzedDocuments map[int] string) {
 			term := strings.ToLower(scan.TokenText())
 			if IsValidString(term) {
 				if val, ok := indexesMap[term]; ok {  // If term exists as key
-					if value, newOk := val[key]; newOk {  // If docId exists as a key
+					if value, newOk := val[key]; newOk {  // If Key exists as a key
 						val[key] = value + 1
 					} else {
 						val[key] = 1
@@ -101,7 +92,7 @@ func createStemFile() {
 	stemMap := createStemPairsList(stemmingMap)
 	for key, value := range stemMap {
 		var buffer bytes.Buffer
-		buffer.WriteString(key + ":")
+		buffer.WriteString(key + "->")
 		for _, pair := range value {
 			buffer.WriteString(fmt.Sprintf("<%s:%d>", pair.Key, pair.Value))
 		}
@@ -119,7 +110,7 @@ func createInvertedIndexFile() {
 	position := 0
 	for key, value := range sortedIndexesMap {
 		var buffer bytes.Buffer
-		buffer.WriteString(key + ":")
+		buffer.WriteString(key + "->")
 		for _, pair := range value {
 			buffer.WriteString(fmt.Sprintf("<%d:%d>", pair.Key, pair.Value))
 		}
@@ -134,5 +125,18 @@ func createInvertedIndexFile() {
 			stemmingMap[stem] =  stMap
 		}
 		position += 1
+	}
+}
+
+func createDocumentsIndexFile() {
+	documentsIndexesFile, err := os.Create("index/documentsIndexes")
+	checkError(err)
+
+	defer documentsIndexesFile.Close()
+
+	for key, value := range documentsIndexes {
+		var buffer bytes.Buffer
+		buffer.WriteString(fmt.Sprintf("%d", key) + "->" + value + "\n|\n")
+		documentsIndexesFile.WriteString(buffer.String())
 	}
 }
