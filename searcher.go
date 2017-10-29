@@ -36,7 +36,14 @@ func search(query string) string {
 		resultPostings = postingsLists[0]
 	}
 	if len(resultPostings) != 0 {
-		result := returnPostings(resultPostings)
+		var result string
+		if len(resultPostings) > 20 {
+			result = returnPostings(resultPostings[:20])
+			result += strconv.Itoa(len(resultPostings)) + " results were found, but top 20 are displayed\n"
+		} else {
+			result = returnPostings(resultPostings)
+			result += strconv.Itoa(len(resultPostings)) + " results were found\n"
+		}
 		return result
 	} else {
 		return "Nothing was found! Try to change your query."

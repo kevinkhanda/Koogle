@@ -1,6 +1,8 @@
 # Koogle
 A Search Engine which in perspective will destroy Google. (At least because Google developers may die of laughter)
 
+# Assignment, part 1:
+
 ## Getting started
 Project is developed using Go programming language.
 
@@ -87,7 +89,7 @@ cd ~/go/src/github.com/kevinkhanda/koogle/main/
 ./main
 ```
 
-##How to use the application 
+## How to use the application 
 You will asked by a command prompt to type a query. So, this is what
 you should do. You can type any kind of query (number of words is not
 limited), however, in some cases you won't receive a result.
@@ -100,3 +102,57 @@ Here are the examples of queries:
 ![Alt text](screenshots/koogle_several_results.png?raw=true "Several results")
 ![Alt text](screenshots/not_found_koogle.png?raw=true "Error example")
 ![Alt text](screenshots/Very_complex_query.png?raw=true "Complex query")
+
+# Assignment, part 2:
+
+## System evaluation:
+I have attached the Ranked search for the previous assignment, so, 
+there is no sufficient difference in the code, except that I am showing only
+top-20 documents this time. Also I have attached an information about the total
+number of documents which were found for a query.
+
+![Alt text](screenshots/code_changes.png?raw=true "The only code changes (blue bar on the left)")
+
+### Query with result >= 100:
+Query "science library" has returned 226 results.
+
+#### Precision evaluation
+Precision formula is:
+```
+       tp
+    ---------
+     tp + fp
+```
+In case of my query:
+```
+      12
+    ------ = 0.8
+    12 + 3
+```
+#### Recall 
+Recall formula is:
+```
+       tp
+    ---------
+     tp + fn 
+```
+In my query:
+```
+      12 
+    ------ = 0.75
+    12 + 4
+```
+#### F1
+F1 formula is:
+```
+        Precision * Recall
+    2 * ------------------
+        Precision + Recall
+```
+In my case:
+```
+        0.8 * 0.75
+    2 * ---------- = 0.774
+        0.8 + 0.75
+    
+```
